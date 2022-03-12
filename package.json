@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "dev": "concurrently \"npm run dev:fasade\"",
+    "start": "node dist/server/index.js",
+    "dev:fasade": "cd fasade; npm run start",
+    "dev:client": "rollup -c rollup.config.js --watch"
+  },
+  "devDependencies": {
+    "typescript": "^4.6.2"
+  },
+  "dependencies": {
+    "@nestjs/cli": "^8.2.2",
+    "concurrently": "^7.0.0"
+  }
+}
