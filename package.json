@@ -1,9 +1,9 @@
 {
   "scripts": {
-    "dev": "concurrently \"npm run dev:fasade\"",
-    "start": "node dist/server/index.js",
-    "dev:fasade": "cd fasade; npm run start",
-    "dev:client": "rollup -c rollup.config.js --watch"
+    "dev": "concurrently \"npm run dev:facade\" \"npm run dev:logging\" \"npm run dev:messages\"",
+    "dev:facade": "cd facade-service; npm run start",
+    "dev:logging": "cd logging-service; npm run start",
+    "dev:messages": "cd messages-service; npm run start"
   },
   "devDependencies": {
     "typescript": "^4.6.2"
