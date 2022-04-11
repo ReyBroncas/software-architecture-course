@@ -10,16 +10,12 @@ Start the cluster and management-center:
 
 ---
 
-####
-
-Task 3:
+#### Task 3:
 
 start client
 `docker-compose run client task1`
 
-####
-
-Task 4:
+#### Task 4:
 
 start client w/o map lock:
 `docker-compose run client task2 racyUpdate`
@@ -30,9 +26,7 @@ start client w/ optimistic lock:
 start client w/ pessimistic lock:
 `docker-compose run client task2 pessimisticUpdate`
 
-####
-
-Task 5:
+#### Task 5:
 
 start producer client:
 `docker-compose run client task3 producer`
