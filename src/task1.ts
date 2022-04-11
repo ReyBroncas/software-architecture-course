@@ -11,7 +11,7 @@ const main = async () => {
   const map = await hz.getMap('task1_map')
 
   for (let i = 0; i < 1000; i += 1) {
-    map.put(i, `value-${i}`)
+    await map.put(i, `value-${i}`)
   }
 
   hz.shutdown()

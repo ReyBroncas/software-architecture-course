@@ -1,23 +1,26 @@
 version: "3.9"
 
 services:
-  hazel_1:
+  hazel:
     image: hazelcast/hazelcast
-    ports: 
-      - 5701:5701
     env_file: .env
+    volumes:
+      - $PWD/config-ext/:/opt/hazelcast/config-ext/:ro
+
+  hazel_1:
+    extends: hazel
+    ports:
+      - 5701:5701
 
   hazel_2:
-    image: hazelcast/hazelcast
-    ports: 
+    extends: hazel
+    ports:
       - 5702:5701
-    env_file: .env
 
   hazel_3:
-    image: hazelcast/hazelcast
-    ports: 
+    extends: hazel
+    ports:
       - 5703:5701
-    env_file: .env
 
   hazel_management_center:
     depends_on:
@@ -25,7 +28,7 @@ services:
       - hazel_2
       - hazel_3
     image: hazelcast/management-center
-    ports: 
+    ports:
       - 8080:8080
 
   client:
