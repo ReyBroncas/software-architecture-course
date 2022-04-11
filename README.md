@@ -18,7 +18,7 @@
 
   `docker-compose run client task1`
   
-  ![](/res/task1.png)
+  ![](/res/task1_0.png)
   ![](/res/task1_1.png)
   ![](/res/task1_2.png)
 
