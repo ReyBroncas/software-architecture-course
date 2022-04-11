@@ -1,6 +1,10 @@
 # software-architecture-course
 
-## Running
+
+## Setup
+Copy env variables
+`cp .env-sample .env`
+
 Start the cluster and management-center:
 `docker-compose run hazel_management_center`
 
