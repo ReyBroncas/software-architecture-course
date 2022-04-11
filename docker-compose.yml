@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  hazel_1:
+    image: hazelcast/hazelcast
+    ports: 
+      - 5701:5701
+    env_file: .env
+
+  hazel_2:
+    image: hazelcast/hazelcast
+    ports: 
+      - 5702:5701
+    env_file: .env
+
+  hazel_3:
+    image: hazelcast/hazelcast
+    ports: 
+      - 5703:5701
+    env_file: .env
+
+  hazel_management_center:
+    depends_on:
+      - hazel_1
+      - hazel_2
+      - hazel_3
+    image: hazelcast/management-center
+    ports: 
+      - 8080:8080
+
+  client:
+    depends_on:
+      - hazel_1
+      - hazel_2
+      - hazel_3
+    links:
+      - hazel_1
+      - hazel_2
+      - hazel_3
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command:
+      - arg1
