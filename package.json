@@ -1,9 +1,9 @@
 {
   "scripts": {
     "dev": "concurrently \"npm run dev:facade\" \"npm run dev:logging\" \"npm run dev:messages\"",
-    "dev:facade": "cd facade-service; npm run start",
-    "dev:logging": "cd logging-service; npm run start",
-    "dev:messages": "cd messages-service; npm run start"
+    "dev:facade": "cd facade-service; npm run start:dev",
+    "dev:logging": "cd logging-service; npm run start:dev",
+    "dev:messages": "cd messages-service; npm run start:dev"
   },
   "devDependencies": {
     "typescript": "^4.6.2"

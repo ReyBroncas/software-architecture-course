@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common'
+import { HazelService } from './hazel/hazel.service'
 
 @Injectable()
 export class AppService {
-  private cache = new Map<string, string>()
+  private cache = new HazelService()
 
-  saveData({ uuid, msg }) {
-    this.cache.set(uuid, msg)
+  async saveData({ uuid, msg }) {
+    await this.cache.put(uuid, msg)
   }
 
-  loadData(): string {
-    return Array.from(this.cache.values()).join(',')
+  async loadData(): Promise<string> {
+    return Array.from(await this.cache.values()).join(',')
   }
 }

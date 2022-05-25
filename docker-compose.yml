@@ -1,0 +1,79 @@
+version: "3.9"
+
+services:
+  hazel:
+    image: hazelcast/hazelcast
+    env_file: .env
+    networks: &net
+      - lab3
+    volumes:
+      - $PWD/config-ext/:/opt/hazelcast/config-ext/:ro
+
+  hazel_1:
+    extends: hazel
+  hazel_2:
+    extends: hazel
+  hazel_3:
+    extends: hazel
+
+
+  logging-service:
+    networks: *net
+    build:
+      context: ./logging-service
+      dockerfile: Dockerfile
+
+  logging-service-1:
+    extends: logging-service
+    depends_on:
+      - hazel_1
+    links:
+      - hazel_1
+    environment:
+      - HAZEL_NODE=hazel_1
+  logging-service-2:
+    extends: logging-service
+    depends_on:
+      - hazel_2
+    links:
+      - hazel_2
+    environment:
+      - HAZEL_NODE=hazel_2
+  logging-service-3:
+    extends: logging-service
+    depends_on:
+      - hazel_3
+    links:
+      - hazel_3
+    environment:
+      - HAZEL_NODE=hazel_3
+
+
+  message-service:
+    networks: *net
+    build:
+      context: ./messages-service
+      dockerfile: Dockerfile
+
+
+  facade-service:
+    depends_on:
+      - logging-service-1
+      - logging-service-2
+      - logging-service-3
+      - message-service
+    networks: *net
+    links:
+      - logging-service-1
+      - logging-service-2
+      - logging-service-3
+      - message-service
+    ports:
+      - 8080:3000
+    build:
+      context: ./facade-service
+      dockerfile: Dockerfile
+
+
+networks:
+  lab3:

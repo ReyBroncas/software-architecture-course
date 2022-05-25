@@ -1,17 +1,25 @@
 # software-architecture-course
 
-### Install dependencies:
-`npm i && cd facade-service && npm i && cd ../messages-service && npm i && cd ../logging-service && npm i && cd ..`
+### Initialization
+`docker-compose build`
 
-#### Run each service individually:
-- `cd facade-service && npm run start`
-- `cd messages-service && npm run start`
-- `cd logging-service && npm run start`
 
-#### Run all services simultaneously:
-- `npm run dev`
+### Run each service separately
+- logging
+    `docker-compose up logging-service-1 logging-service-2 logging-service-3`
+- facade
+    `docker-compose up facade-service`
+- messages
+    `docker-compose up message-service`
+
+### Run everything
+`docker-compose facade-service`
 
 ### Example:
-![1 POST request](/res/screenshot_1.png)
-![2 POST request](/res/screenshot_2.png)
-![3 GET request](/res/screenshot_3.png)
+- Task1: 10 messages written & retrieved
+
+    ![1 screenshot](/res/screenshot_1.png)
+- Task2: 2 logging services disabled & msg retrieve
+
+    ![2 screenshot](/res/screenshot_2.png)
+
