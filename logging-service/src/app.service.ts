@@ -5,11 +5,11 @@ import { HazelService } from './hazel/hazel.service'
 export class AppService {
   private cache = new HazelService()
 
-  async saveData({ uuid, msg }) {
+  async logData({ uuid, msg }) {
     await this.cache.put(uuid, msg)
   }
 
-  async loadData(): Promise<string> {
-    return Array.from(await this.cache.values()).join(',')
+  async loadLogs(): Promise<any> {
+    return await this.cache.values()
   }
 }

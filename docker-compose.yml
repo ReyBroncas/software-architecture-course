@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  hazel:
+  hazelcast:
     image: hazelcast/hazelcast
     env_file: .env
     networks: &net
@@ -10,11 +10,11 @@ services:
       - $PWD/config-ext/:/opt/hazelcast/config-ext/:ro
 
   hazel_1:
-    extends: hazel
+    extends: hazelcast
   hazel_2:
-    extends: hazel
+    extends: hazelcast
   hazel_3:
-    extends: hazel
+    extends: hazelcast
 
 
   logging-service:
@@ -49,25 +49,56 @@ services:
       - HAZEL_NODE=hazel_3
 
 
-  message-service:
+  rabbitmq:
+    image: rabbitmq:3.10.2-alpine
     networks: *net
+    ports:
+        - 5673:5672
+        - 15673:15672
+    environment:
+      - log.console=true
+    # volumes:
+    #     - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+    #     - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    container_name: 'rabbitmq'
+
+
+  messages-service:
+    networks: *net
+    depends_on:
+      - rabbitmq
+    environment:
+      - RMQ_URL=amqp://rabbitmq:5672
+    links:
+      - rabbitmq
     build:
       context: ./messages-service
       dockerfile: Dockerfile
 
+  messages-service-1:
+    extends: messages-service
+  messages-service-2:
+    extends: messages-service
 
   facade-service:
     depends_on:
       - logging-service-1
       - logging-service-2
       - logging-service-3
-      - message-service
+      - messages-service-1
+      - messages-service-2
     networks: *net
     links:
       - logging-service-1
       - logging-service-2
       - logging-service-3
-      - message-service
+      - messages-service-1
+      - messages-service-2
+      - rabbitmq
+    environment:
+      - "RMQ_URL=amqp://rabbitmq:5672"
+      - "LOGGING_SERVICES_LIST=http://logging-service-1:3001 http://logging-service-2:3001 http://logging-service-3:3001"
+      - "MESSAGE_SERVICES_LIST=http://messages-service-1:3001 http://messages-service-2:3001"
     ports:
       - 8080:3000
     build:

@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Inject } from '@nestjs/common'
+import { ClientProxy } from '@nestjs/microservices'
 
 import axios from 'axios'
 import getUuid from 'uuid-by-string'
@@ -6,38 +7,34 @@ import _ from 'lodash'
 
 @Injectable()
 export class AppService {
-  private MESSAGE_SERVICE_BASE_URI = 'http://message-service:3002'
-  private LOGGING_SERVICE_BASE_URI = [
-    'http://logging-service-1:3001',
-    'http://logging-service-2:3001',
-    'http://logging-service-3:3001',
-  ]
+  private LOGGING_SERVICES_LIST = process.env.LOGGING_SERVICES_LIST.split(' ')
 
-  private getRandomLogger(): string {
-    const tmp = _.sample(this.LOGGING_SERVICE_BASE_URI)
-    return tmp
+  constructor(@Inject('rmq') private client: ClientProxy) {}
+
+  private getRandomLoggingService(): string {
+    return _.sample(this.LOGGING_SERVICES_LIST)
   }
 
-  async logData(data: any) {
+  save(data: any) {
+    this.client.emit('saveMessage', data)
+  }
+
+  async getMessages() {
+    return await this.client.send('getMessages', {}).toPromise()
+  }
+
+  async log(data: any) {
     await axios.request({
-      url: this.getRandomLogger(),
+      url: this.getRandomLoggingService(),
       method: 'post',
       data,
       headers: { 'Content-Type': 'application/json' },
     })
   }
 
-  async retrieveLogData(): Promise<Array<string>> {
+  async getLogs(): Promise<Array<string>> {
     const response = await axios.request({
-      url: this.getRandomLogger(),
-      method: 'get',
-    })
-    return response.data
-  }
-
-  async reqMessageService() {
-    const response = await axios.request({
-      url: this.MESSAGE_SERVICE_BASE_URI,
+      url: this.getRandomLoggingService(),
       method: 'get',
     })
     return response.data

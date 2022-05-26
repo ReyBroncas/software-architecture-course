@@ -1,18 +1,22 @@
-import { Controller, Post, Get, Body } from '@nestjs/common'
+import { Controller, Post, Get, Body, Logger } from '@nestjs/common'
 import { AppService } from './app.service'
 
 @Controller()
 export class AppController {
+  private logger = new Logger('AppController')
   constructor(private readonly appService: AppService) {}
 
   @Post()
-  saveData(@Body() data: any) {
-    console.log(data)
-    this.appService.saveData(data)
+  async logData(@Body() data: any) {
+    this.logger.log(`Logged: ${data}`)
+    await this.appService.logData(data)
   }
 
   @Get()
-  retrieveData() {
-    return this.appService.loadData()
+  async getLogs() {
+    const logs = await this.appService.loadLogs()
+    this.logger.log(`Loaded logs: ${logs}`)
+
+    return `Logs: ${Array.from(logs).join(',')}`
   }
 }
