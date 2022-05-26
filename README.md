@@ -4,7 +4,7 @@
 ### Run attached
 `make start`
 
-## Run detached
+### Run detached
 `make start-quiet`
 
 ### Stop
